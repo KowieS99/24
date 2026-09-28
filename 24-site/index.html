@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    --ivory:#F3EDE2; --gold:#C9A876;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:#0B0A08; color:var(--ivory);
+  }
+  .screen{
+    position:fixed; inset:0;
+    display:none;
+    flex-direction:column;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .screen.visible{display:flex;}
+
+  .reveal{
+    opacity:0; transform:translateY(14px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- HOME ---------- */
+  #screen-home{
+    overflow:hidden;
+    align-items:center; justify-content:center; text-align:center;
+    background:#0B0A08;
+  }
+  .lights{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+  .orb{
+    position:absolute; width:42vw; height:42vw; border-radius:50%;
+    filter:blur(80px); opacity:.4; mix-blend-mode:screen;
+  }
+  .orb1{ top:6%; left:8%; animation:orbMove1 15s ease-in-out infinite, orbColor1 10s ease-in-out infinite; }
+  .orb2{ top:50%; left:58%; animation:orbMove2 19s ease-in-out infinite, orbColor2 12s ease-in-out infinite; }
+  .orb3{ top:28%; left:66%; animation:orbMove3 17s ease-in-out infinite, orbColor3 14s ease-in-out infinite; }
+  @keyframes orbMove1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(9vw,6vw); } }
+  @keyframes orbMove2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-10vw,-5vw); } }
+  @keyframes orbMove3{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-7vw,7vw); } }
+  @keyframes orbColor1{ 0%,100%{ background:#C9A876; } 50%{ background:#DEB887; } }
+  @keyframes orbColor2{ 0%,100%{ background:#DEB887; } 50%{ background:#8B5E34; } }
+  @keyframes orbColor3{ 0%,100%{ background:#B8860B; } 50%{ background:#DEB887; } }
+
+  .home-content{ position:relative; z-index:1; }
+
+  .title-24{
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:clamp(9rem, 36vw, 22rem);
+    line-height:0.78;
+    letter-spacing:-.045em;
+    margin:0;
+    color:#fff;
+    position:relative;
+    display:inline-block;
+  }
+  .title-24::before, .title-24::after{
+    content:"24"; position:absolute; inset:0; color:#000;
+    background:#0B0A08; overflow:hidden; opacity:0;
+  }
+  @keyframes glitchTop{
+    0%,78%,100%{ opacity:0; clip-path:inset(0 0 60% 0); transform:translate(0,0); }
+    79%{ opacity:1; clip-path:inset(8% 0 40% 0); transform:translate(-16px,-3px); }
+    82%{ opacity:1; clip-path:inset(0 0 70% 0); transform:translate(12px,2px); }
+    85%{ opacity:1; clip-path:inset(20% 0 30% 0); transform:translate(-10px,0); }
+    88%{ opacity:0; }
+    90%{ opacity:1; clip-path:inset(5% 0 55% 0); transform:translate(14px,-2px); }
+    92%{ opacity:0; }
+  }
+  @keyframes glitchBottom{
+    0%,80%,100%{ opacity:0; clip-path:inset(55% 0 0 0); transform:translate(0,0); }
+    81%{ opacity:1; clip-path:inset(60% 0 0 0); transform:translate(15px,2px); }
+    84%{ opacity:1; clip-path:inset(40% 0 10% 0); transform:translate(-13px,-2px); }
+    87%{ opacity:1; clip-path:inset(65% 0 0 0); transform:translate(10px,0); }
+    89%{ opacity:0; }
+    91%{ opacity:1; clip-path:inset(45% 0 15% 0); transform:translate(-12px,3px); }
+    93%{ opacity:0; }
+  }
+  .title-24::before{ animation:glitchTop 2.6s infinite; }
+  .title-24::after{ color:#fff; background:#000; animation:glitchBottom 2.6s infinite; animation-delay:.12s; }
+  @media (prefers-reduced-motion: reduce){
+    .title-24::before, .title-24::after{ animation:none; opacity:0; }
+    .orb{ animation:none; }
+  }
+
+  .choices{
+    margin-top:56px; display:flex; gap:88px;
+  }
+  .choice{
+    font-family:'Archivo',sans-serif; font-weight:700;
+    font-size:clamp(1.6rem, 5vw, 2.6rem); letter-spacing:.01em;
+    color:var(--ivory); text-decoration:none;
+    background:none; border:none; cursor:pointer;
+    padding:8px 4px; position:relative;
+  }
+  .choice::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+    background:var(--gold); transition:width .35s ease;
+  }
+  .choice:hover::after{ width:100%; }
+  .choice .n{ color:#6E655A; margin-right:10px; font-size:.9rem; vertical-align:middle; }
+
+  /* ---------- TRANSITION WIPE ---------- */
+  #wipe{
+    position:fixed; inset:0; z-index:50; pointer-events:none;
+    background:var(--wipe-color, #2E2115);
+    clip-path:circle(0% at var(--x,50%) var(--y,50%));
+  }
+  #wipe.active{ transition:clip-path .95s cubic-bezier(.22,1,.36,1); clip-path:circle(150% at var(--x,50%) var(--y,50%)); }
+
+  /* ---------- PARTICLE EXPLOSION ---------- */
+  .particle-burst{ position:fixed; inset:0; z-index:60; pointer-events:none; }
+  .particle{
+    position:absolute; border-radius:1px;
+    transform:translate(-50%,-50%);
+    animation:particleFly .75s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes particleFly{
+    0%{ transform:translate(-50%,-50%) translate(0,0) rotate(0deg) scale(1); opacity:1; }
+    70%{ opacity:1; }
+    100%{ transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) rotate(180deg) scale(.4); opacity:0; }
+  }
+  .shock-ring{
+    position:fixed; z-index:59; pointer-events:none;
+    border-radius:50%; border:4px solid rgba(255,255,255,0.7);
+    transform:translate(-50%,-50%); width:10px; height:10px;
+    animation:shockOut .55s ease-out forwards;
+  }
+  @keyframes shockOut{
+    0%{ width:10px; height:10px; opacity:.9; }
+    100%{ width:520px; height:520px; opacity:0; }
+  }
+
+  /* ---------- MINECRAFT ---------- */
+  #screen-minecraft{
+    background:#2E2115; overflow-y:auto; overflow-x:hidden;
+  }
+  .mc-lights{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .mc-orb{
+    position:absolute; width:44vw; height:44vw; border-radius:50%;
+    filter:blur(85px); opacity:.45; mix-blend-mode:screen;
+  }
+  .mc-orb1{ top:0%; left:-6%; animation:orbMove1 16s ease-in-out infinite, mcColor1 11s ease-in-out infinite; }
+  .mc-orb2{ top:45%; left:55%; animation:orbMove2 20s ease-in-out infinite, mcColor2 13s ease-in-out infinite; }
+  .mc-orb3{ top:20%; left:60%; animation:orbMove3 18s ease-in-out infinite, mcColor3 15s ease-in-out infinite; }
+  @keyframes mcColor1{ 0%,100%{ background:#79573A; } 50%{ background:#DEB887; } }
+  @keyframes mcColor2{ 0%,100%{ background:#6B7A4F; } 50%{ background:#8B4A2E; } }
+  @keyframes mcColor3{ 0%,100%{ background:#A9C084; } 50%{ background:#79573A; } }
+
+  .mc-wrap{ max-width:760px; margin:0 auto; padding:0 24px 72px; width:100%; position:relative; z-index:1; }
+  .mc-nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:24px 0 8px; position:sticky; top:0; background:rgba(46,33,21,0.75);
+    backdrop-filter:blur(6px); z-index:5;
+  }
+  .back-link{
+    color:#F5E9D3; text-decoration:none; font-size:.85rem; letter-spacing:.05em;
+    border:1px solid #96754F; border-radius:5px; padding:6px 12px;
+    background:none; cursor:pointer; font-family:inherit;
+  }
+  .back-link:hover{ background:#5A4128; }
+
+  .pixel-art{ display:grid; margin:18px auto 8px; image-rendering:pixelated; }
+  .pixel-art div{ width:100%; aspect-ratio:1; }
+
+  .mc-hero{ text-align:center; padding:18px 0 40px; }
+  .mc-hero h1{
+    font-family:'Archivo',sans-serif; font-weight:900;
+    font-size:clamp(2.2rem,7vw,3.4rem); margin:14px 0 8px; color:#F8EFDC;
+  }
+  .mc-hero p{ color:#EBDBB8; max-width:46ch; margin:0 auto; font-size:.98rem; }
+
+  .mc-menu{ display:flex; justify-content:center; gap:28px; padding:8px 0 12px; flex-wrap:wrap; }
+  .mc-menu-btn{
+    font-family:'Archivo',sans-serif; font-weight:700;
+    font-size:clamp(1.2rem,3.6vw,1.7rem);
+    color:#F8EFDC; background:rgba(255,255,255,0.06);
+    border:1px solid #96754F; border-radius:8px;
+    padding:18px 30px; cursor:pointer; position:relative;
+  }
+  .mc-menu-btn:hover{ background:rgba(255,255,255,0.12); border-color:#DEB887; }
+
+  .mc-list{ display:none; }
+  .mc-list.active{ display:block; }
+  .mc-back{
+    display:inline-block; margin-bottom:24px;
+    color:#EBDBB8; background:none; border:none; cursor:pointer;
+    font-family:'Space Grotesk',sans-serif; font-size:.85rem; letter-spacing:.05em;
+    padding:0;
+  }
+  .mc-back:hover{ color:#F8EFDC; }
+
+  .mc-section{ padding:0 0 36px; }
+  .mc-section-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:22px; }
+  .mc-section-head .glyph{ font-size:1.3rem; }
+  .mc-section-head h2{
+    font-family:'Archivo',sans-serif; font-weight:700;
+    font-size:1.5rem; margin:0; color:#F8EFDC; letter-spacing:.01em;
+  }
+  .mc-items{ display:grid; gap:16px; }
+  .mc-item{ border-left:3px solid #A9C084; padding:4px 0 4px 16px; }
+  .mc-item h3{ margin:0; font-size:1.02rem; font-weight:600; }
+  .mc-item h3 a{ color:#F8EFDC; text-decoration:none; border-bottom:1px solid rgba(248,239,220,0.35); }
+  .mc-item h3 a:hover{ border-bottom-color:#F8EFDC; }
+  .mc-item p{ margin:4px 0 0; color:#EBDBB8; font-size:.9rem; }
+
+  /* ---------- YOUTUBE ---------- */
+  #screen-youtube{
+    background:#0B0B0B; align-items:center; justify-content:center;
+  }
+  #screen-youtube .back-link{ position:absolute; top:24px; left:24px; }
+  #screen-youtube p{
+    color:#fff; font-family:'Space Grotesk',sans-serif;
+    font-size:1.4rem; letter-spacing:.03em; margin:0;
+  }
+
+  /* ---------- BGM TOGGLE ---------- */
+  #bgm-toggle{
+    position:fixed; bottom:calc(20px + env(safe-area-inset-bottom,0px)); right:20px;
+    z-index:20; width:42px; height:42px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.25); background:rgba(0,0,0,0.35);
+    color:var(--ivory); font-size:1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; text-decoration:none;
+  }
+
+  #bgm-toggle.shake{ animation:shake .4s ease; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-3px); }
+    75%{ transform:translateX(3px); }
+  }
+
+  @media (max-width:560px){
+    .choices{ flex-direction:column; gap:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="wipe"></div>
+
+<button id="bgm-toggle" aria-label="Musique" title="Musique de fond (à ajouter)">♪</button>
+<audio id="bgm" loop></audio>
+
+<!-- HOME -->
+<section id="screen-home" class="screen visible">
+  <div class="lights" aria-hidden="true">
+    <span class="orb orb1"></span>
+    <span class="orb orb2"></span>
+    <span class="orb orb3"></span>
+  </div>
+  <div class="home-content">
+    <h1 class="title-24 reveal" data-text="24">24</h1>
+    <div class="choices reveal">
+      <button class="choice" data-target="minecraft" data-color="#2E2115"><span class="n">01</span>Minecraft</button>
+      <button class="choice" data-target="youtube" data-color="#0B0B0B"><span class="n">02</span>YouTube</button>
+    </div>
+  </div>
+</section>
+
+<!-- MINECRAFT -->
+<section id="screen-minecraft" class="screen">
+  <div class="mc-lights" aria-hidden="true">
+    <span class="mc-orb mc-orb1"></span>
+    <span class="mc-orb mc-orb2"></span>
+    <span class="mc-orb mc-orb3"></span>
+  </div>
+  <div class="mc-wrap">
+    <div class="mc-nav">
+      <button class="back-link" data-target="home" data-color="#0B0A08">← 24</button>
+    </div>
+    <div class="mc-hero">
+      <div class="pixel-art reveal" id="pixelArt"></div>
+      <h1 class="reveal">Le coin cottage</h1>
+      <p class="reveal">Une sélection de mods et packs pour une survie douce, chaleureuse, sans se presser.</p>
+    </div>
+
+    <div class="mc-menu reveal">
+      <button class="mc-menu-btn" data-mc="mods">🎒 Mods</button>
+      <button class="mc-menu-btn" data-mc="resources">🎨 Packs de ressources</button>
+    </div>
+
+    <div class="mc-list" id="mc-mods">
+      <button class="mc-back" data-mc-back="1">← Retour</button>
+      <div class="mc-section reveal">
+      <div class="mc-section-head"><span class="glyph">🎒</span><h2>Mods</h2></div>
+      <div class="mc-items">
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/appleskin" target="_blank" rel="noopener">🍎 AppleSkin</a></h3><p>Affiche la saturation et les infos de nourriture en détail.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/cloth-config" target="_blank" rel="noopener">🧵 Cloth Config API</a></h3><p>Librairie d'écrans de configuration utilisée par d'autres mods.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/distanthorizons" target="_blank" rel="noopener">🌄 Distant Horizons</a></h3><p>Étend la distance d'affichage avec un rendu du terrain lointain.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">🧩 Fabric API</a></h3><p>L'API de base indispensable pour la plupart des mods Fabric.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/ferrite-core" target="_blank" rel="noopener">🧠 FerriteCore</a></h3><p>Réduit la consommation de mémoire du jeu.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/iris" target="_blank" rel="noopener">✨ Iris Shaders</a></h3><p>Permet d'utiliser des shaders pour une lumière plus douce.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/jade" target="_blank" rel="noopener">🔍 Jade</a></h3><p>Affiche des infos sur le bloc ou l'entité regardée.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/lithium" target="_blank" rel="noopener">⚡ Lithium</a></h3><p>Optimisation du moteur du jeu côté serveur, sans rien changer au gameplay.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">🛠️ Mod Menu</a></h3><p>Un menu en jeu pour retrouver et configurer tous tes mods.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/mouse-tweaks" target="_blank" rel="noopener">🖱️ Mouse Tweaks</a></h3><p>Des raccourcis souris pratiques pour trier l'inventaire.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/placeholder-api" target="_blank" rel="noopener">📝 Text Placeholder API</a></h3><p>Librairie de texte dynamique utilisée par d'autres mods.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/sodium" target="_blank" rel="noopener">🚀 Sodium</a></h3><p>Optimisation du rendu graphique pour beaucoup plus de FPS.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/mod/xaeros-minimap" target="_blank" rel="noopener">🗺️ Xaero's Minimap</a></h3><p>Une minimap claire avec les points d'intérêt du monde.</p></div>
+      </div>
+      </div>
+    </div>
+
+    <div class="mc-list" id="mc-resources">
+      <button class="mc-back" data-mc-back="1">← Retour</button>
+      <div class="mc-section reveal">
+      <div class="mc-section-head"><span class="glyph">🎨</span><h2>Packs de ressources</h2></div>
+      <div class="mc-items">
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/als-armor-stands-revamped" target="_blank" rel="noopener">AL's Armor Stands Revamped</a></h3><p>Des porte-armures retravaillés, plus détaillés.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/als-creepers-revamped" target="_blank" rel="noopener">AL's Creepers Revamped 2.0</a></h3><p>Une texture de creeper revisitée.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/animated-items" target="_blank" rel="noopener">Animated Items 1.6.3</a></h3><p>De légères animations sur les textures d'objets.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/better-leaves" target="_blank" rel="noopener">Motschen's Better Leaves 9.6</a></h3><p>Des feuillages plus doux et naturels.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/clearer-slot-highlight" target="_blank" rel="noopener">Clearer Slot Highlight</a></h3><p>Un surlignage de case d'inventaire plus visible.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/3d-crops" target="_blank" rel="noopener">3D Crops Revamped</a></h3><p>Des cultures rendues en relief plutôt qu'à plat.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/cubic-sun-moon" target="_blank" rel="noopener">Cubic Sun & Moon v1.8.5</a></h3><p>Un soleil et une lune façon blocs, dans l'esprit du jeu.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/enchant-icons-countxd" target="_blank" rel="noopener">Enchant Icons 26.2-v1.3</a></h3><p>Des icônes indiquant le niveau des enchantements.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/glowing-glints" target="_blank" rel="noopener">Enchantment Outlines</a></h3><p>Un contour lumineux plus visible sur les objets enchantés.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/even-better-enchants" target="_blank" rel="noopener">Even Better Enchants</a></h3><p>Un effet de brillance d'enchantement affiné.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/fancy-crops" target="_blank" rel="noopener">Fancy Crops v1.3</a></h3><p>Des textures de cultures plus détaillées.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/low-shield-pack" target="_blank" rel="noopener">Low Shield</a></h3><p>Un bouclier plus discret à l'écran.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/low-on-fire" target="_blank" rel="noopener">LowOnFire</a></h3><p>Un overlay de feu réduit quand tu brûles.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/new-glowing-ores" target="_blank" rel="noopener">New Glowing Ores [Border]</a></h3><p>Des minerais avec un contour lumineux, plus faciles à repérer.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/qraftys-capitalized-font" target="_blank" rel="noopener">qrafty's Capitalized Font 4.1</a></h3><p>Une police de texte tout en capitales.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/enchanted-books-re-covered" target="_blank" rel="noopener">Re-covered</a></h3><p>Des livres enchantés avec une couverture retravaillée.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/renewed-bookshelf" target="_blank" rel="noopener">Renewed Bookshelf v1.0.2</a></h3><p>Une texture de bibliothèque mise à jour.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/roman-numerals-for-enchant-icons" target="_blank" rel="noopener">Roman Numerals for Enchant Icons</a></h3><p>Les niveaux d'enchantement affichés en chiffres romains.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/round-trees" target="_blank" rel="noopener">Round-Trees 8.4</a></h3><p>Des feuillages d'arbres aux formes plus arrondies.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/simple-grass-flowers" target="_blank" rel="noopener">Simple Grass Flowers v2.0.0</a></h3><p>Des herbes et fleurs simplifiées, plus légères visuellement.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/small-totem" target="_blank" rel="noopener">Smaller Totem</a></h3><p>Une icône de totem d'immortalité réduite.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/theones-eating-animation-pack" target="_blank" rel="noopener">Theone's Eating Animation Pack v1.0</a></h3><p>Une animation personnalisée quand tu manges.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/vines-leaves-gui" target="_blank" rel="noopener">Vines & Leaves GUI</a></h3><p>Une interface habillée de lianes et de feuilles.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/vines-leaves-hotbar" target="_blank" rel="noopener">Vines & Leaves Hotbar</a></h3><p>La barre d'objets dans le même esprit végétal.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/hide-armor" target="_blank" rel="noopener">Hide Armor</a></h3><p>Masque le rendu visuel de l'armure portée.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/fancy-beds" target="_blank" rel="noopener">Fancy Beds v4.2</a></h3><p>Des lits avec une texture plus soignée.</p></div>
+        <div class="mc-item"><h3><a href="https://modrinth.com/resourcepack/pop-out-clocks" target="_blank" rel="noopener">Pop-out Clock</a></h3><p>Une horloge à l'aspect 3D qui ressort de l'écran.</p></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YOUTUBE -->
+<section id="screen-youtube" class="screen">
+  <button class="back-link" data-target="home" data-color="#0B0A08">← 24</button>
+  <p class="reveal">Work in progress</p>
+</section>
+
+<script>
+  // --- view transition (circle wipe) ---
+  const wipe = document.getElementById('wipe');
+  const screens = { home: document.getElementById('screen-home'), minecraft: document.getElementById('screen-minecraft'), youtube: document.getElementById('screen-youtube') };
+
+  function revealIn(container){
+    const els = container.querySelectorAll('.reveal');
+    els.forEach((el,i)=>{
+      el.classList.remove('in');
+      void el.offsetWidth; // restart the transition
+      setTimeout(()=>el.classList.add('in'), 60 + i*90);
+    });
+  }
+
+  const palettes = {
+    minecraft: ['#4A7A3A','#5E8C4A','#7C9A5B','#1F2E1A','#DEE8A0'],
+    youtube:   ['#FFFFFF','#C9C9C9','#6E6E6E','#2A2A2A'],
+    home:      ['#C9A876','#DEB887','#8B5E34','#F3EDE2']
+  };
+
+  function explode(x, y, target){
+    const ring = document.createElement('div');
+    ring.className = 'shock-ring';
+    ring.style.left = x+'px'; ring.style.top = y+'px';
+    document.body.appendChild(ring);
+    setTimeout(()=>ring.remove(), 600);
+
+    const colors = palettes[target] || palettes.home;
+    const burst = document.createElement('div');
+    burst.className = 'particle-burst';
+    const count = 30;
+    for(let i=0;i<count;i++){
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const angle = (Math.PI*2*i/count) + (Math.random()*0.5 - 0.25);
+      const dist = 90 + Math.random()*260;
+      const dx = Math.cos(angle)*dist, dy = Math.sin(angle)*dist;
+      const size = 5 + Math.random()*11;
+      p.style.left = x+'px'; p.style.top = y+'px';
+      p.style.width = size+'px'; p.style.height = size+'px';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.setProperty('--dx', dx+'px');
+      p.style.setProperty('--dy', dy+'px');
+      p.style.animationDelay = (Math.random()*0.08)+'s';
+      burst.appendChild(p);
+    }
+    document.body.appendChild(burst);
+    setTimeout(()=>burst.remove(), 900);
+  }
+
+  document.querySelectorAll('[data-target]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const rect = el.getBoundingClientRect();
+      const x = rect.left + rect.width/2, y = rect.top + rect.height/2;
+      wipe.style.setProperty('--x', x+'px');
+      wipe.style.setProperty('--y', y+'px');
+      wipe.style.setProperty('--wipe-color', el.dataset.color || '#79573A');
+      wipe.classList.add('active');
+      explode(x, y, el.dataset.target);
+      setTimeout(()=>{
+        Object.values(screens).forEach(s=>s.classList.remove('visible'));
+        const target = screens[el.dataset.target];
+        target.classList.add('visible');
+        revealIn(target);
+      }, 480);
+      setTimeout(()=>{ wipe.classList.remove('active'); }, 950);
+    });
+  });
+
+  // --- Minecraft sub-menu: Mods / Packs de ressources ---
+  const mcMenu = document.querySelector('.mc-menu');
+  document.querySelectorAll('.mc-menu-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      mcMenu.style.display = 'none';
+      const list = document.getElementById('mc-'+btn.dataset.mc);
+      list.classList.add('active');
+      revealIn(list);
+    });
+  });
+  document.querySelectorAll('[data-mc-back]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      btn.closest('.mc-list').classList.remove('active');
+      mcMenu.style.display = 'flex';
+    });
+  });
+
+  window.addEventListener('load', ()=>revealIn(screens.home));
+
+  // --- tiny pixel-art cottage (grass / trunk / leaves / roof) ---
+  const rows = [
+    "0000222200000000",
+    "0002222220000000",
+    "0022222222200000",
+    "0222222222220000",
+    "0033333333300000",
+    "0003333330000000",
+    "0000111100000000",
+    "0000111100000000",
+    "4444444444444444"
+  ];
+  const palette = {0:'transparent',1:'#D9B98A',2:'#7C9A5B',3:'#8B4A2E',4:'#A9C084'};
+  const pa = document.getElementById('pixelArt');
+  pa.style.gridTemplateColumns = `repeat(${rows[0].length}, 1fr)`;
+  pa.style.width = 'min(70vw, 280px)';
+  rows.forEach(r=>{
+    [...r].forEach(ch=>{
+      const d = document.createElement('div');
+      d.style.background = palette[ch];
+      pa.appendChild(d);
+    });
+  });
+
+  // --- music toggle: ready for a track, currently silent until a source is added ---
+  const bgm = document.getElementById('bgm');
+  const bgmBtn = document.getElementById('bgm-toggle');
+  bgmBtn.addEventListener('click', ()=>{
+    if(!bgm.src){
+      bgmBtn.classList.remove('shake'); void bgmBtn.offsetWidth;
+      bgmBtn.classList.add('shake');
+      return;
+    }
+    if(bgm.paused){ bgm.play(); bgmBtn.textContent='❚❚'; }
+    else{ bgm.pause(); bgmBtn.textContent='♪'; }
+  });
+</script>
+
+</body>
+</html>
